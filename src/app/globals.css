@@ -8,11 +8,39 @@
 :root {
   --background: #fdfdfc;
   --foreground: #1c1c1c;
-  --primary: #2d3436; /* Charcoal */
-  --accent: #c5a059; /* Muted Gold/Sand */
+  --primary: #2d3436;
+  --accent: #c5a059;
   --card: #ffffff;
   --muted: #f5f5f4;
   --border: #e7e7e4;
+}
+
+.dark {
+  --background: #0f0f11;
+  --foreground: #f3f4f6;
+  --primary: #f3f4f6;
+  --accent: #d4b473;
+  --card: #1a1a1e;
+  --muted: #27272a;
+  --border: #27272a;
+}
+
+/* Force light mode on login page to prevent flash */
+html:global(.force-light) {
+  --background: #fdfdfc !important;
+  --foreground: #1c1c1c !important;
+  --card: #ffffff !important;
+  --muted: #f5f5f4 !important;
+  --border: #e7e7e4 !important;
+}
+
+/* Force dark mode on login page when dark mode is set */
+html:global(.force-dark) {
+  --background: #0f0f11 !important;
+  --foreground: #f3f4f6 !important;
+  --card: #1a1a1e !important;
+  --muted: #27272a !important;
+  --border: #27272a !important;
 }
 
 @layer base {

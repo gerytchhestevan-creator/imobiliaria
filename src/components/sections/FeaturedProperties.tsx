@@ -13,6 +13,7 @@ export function FeaturedProperties() {
     {
       id: '1',
       title: 'Residência Origami',
+      description: 'Linda casa com design moderno',
       price: 1250000,
       neighborhood: 'Jardim das Oliveiras',
       beds: 3,
@@ -25,6 +26,7 @@ export function FeaturedProperties() {
     {
       id: '2',
       title: 'Edifício Meridien',
+      description: 'Apartamento aconchegante',
       price: 890000,
       neighborhood: 'Planalto',
       beds: 2,
@@ -37,6 +39,7 @@ export function FeaturedProperties() {
     {
       id: '3',
       title: 'Casa da Encosta',
+      description: 'Casa com vista para o mar',
       price: 2100000,
       neighborhood: 'Parque das Nações',
       beds: 4,

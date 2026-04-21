@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { CompareProvider } from "@/components/property/CompareProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,8 +37,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${cormorant.variable} ${geistMono.variable} antialiased`}
     >
       <body className="font-sans">
-        <Navbar />
-        {children}
+        <ThemeProvider>
+          <CompareProvider>
+            <Navbar />
+            {children}
+          </CompareProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,163 +1,263 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Search, MapPin, DollarSign, Home as HomeIcon, Loader2, SlidersHorizontal, ArrowRight } from 'lucide-react'
-import { PropertyCard } from '@/components/property/PropertyCard'
+import React, { useState, useEffect, useMemo } from 'react'
+import { motion } from 'framer-motion'
+import { PropertyCardML } from '@/components/property/PropertyCardML'
+import { PropertyFilters } from '@/components/property/PropertyFilters'
 import { getProperties, type PropertyData } from '@/lib/supabase/properties'
-import { cn } from '@/lib/utils'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { CompareBar } from '@/components/property/CompareButton'
 
-export default function ListingPage() {
-  const [filterType, setFilterType] = useState('all')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [properties, setProperties] = useState<PropertyData[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function loadProperties() {
-      setLoading(true)
-      // For MVP simulation, we'll fetch all and filter client-side if needed
-      const data = await getProperties({ status: 'active' })
-      let filtered = data
-      
-      if (filterType !== 'all') {
-        filtered = filtered.filter(p => p.property_type === filterType)
-      }
-      
-      if (searchQuery) {
-        filtered = filtered.filter(p => 
-          p.neighborhood.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.title.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      }
-
-      setProperties(filtered)
-      setLoading(false)
-    }
-    loadProperties()
-  }, [filterType, searchQuery])
-
-  return (
-    <div className="min-h-screen bg-[#fdfdfc] pt-40 pb-32">
-      <div className="container mx-auto px-6">
-        {/* Header - Architectural Style */}
-        <div className="max-w-4xl mb-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#c5a059] mb-4 block">Catálogo Exclusivo</span>
-            <h1 className="text-6xl md:text-8xl font-serif text-[#1a1a1a] leading-none mb-8 italic">
-              O Acervo
-            </h1>
-            <p className="text-lg text-slate-500 font-light max-w-xl">
-              Uma seleção rigorosa de imóveis que combinam localização privilegiada, arquitetura de excelência e a transparência do modelo 2%.
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Minimalist Filter Bar */}
-        <div className="flex flex-col lg:flex-row items-end lg:items-center justify-between gap-12 mb-16 pb-8 border-b border-slate-100">
-          <div className="flex flex-wrap gap-12">
-            <FilterButton 
-              label="Todos" 
-              active={filterType === 'all'} 
-              onClick={() => setFilterType('all')} 
-            />
-            <FilterButton 
-              label="Casas" 
-              active={filterType === 'house'} 
-              onClick={() => setFilterType('house')} 
-            />
-            <FilterButton 
-              label="Apartamentos" 
-              active={filterType === 'apartment'} 
-              onClick={() => setFilterType('apartment')} 
-            />
-          </div>
-
-          <div className="relative w-full lg:w-96 group">
-            <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-[#c5a059] transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Buscar por bairro ou nome..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-4 py-2 bg-transparent border-none text-sm font-medium focus:ring-0 outline-none placeholder:text-slate-300 transition-all"
-            />
-          </div>
-        </div>
-
-        {/* Property Grid */}
-        <div className="relative min-h-[400px]">
-          <AnimatePresence mode="wait">
-            {loading ? (
-              <motion.div 
-                key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20"
-              >
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="space-y-6">
-                    <div className="aspect-[4/5] bg-slate-50 animate-pulse" />
-                    <div className="h-4 w-1/3 bg-slate-50 animate-pulse" />
-                    <div className="h-8 w-full bg-slate-50 animate-pulse" />
-                  </div>
-                ))}
-              </motion.div>
-            ) : properties.length > 0 ? (
-              <motion.div 
-                key="results"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20"
-              >
-                {properties.map((property, index) => (
-                  <PropertyCard key={property.id} property={property} index={index} />
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div 
-                key="empty"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-col items-center justify-center py-40 text-center"
-              >
-                <p className="text-2xl font-serif italic text-slate-400 mb-4">Nenhum ativo encontrado.</p>
-                <button 
-                  onClick={() => {setFilterType('all'); setSearchQuery('')}}
-                  className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a] border-b border-[#c5a059] pb-1"
-                >
-                  Limpar todos os filtros
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </div>
-  )
+interface FilterState {
+  search: string
+  propertyType: string
+  priceMin: string
+  priceMax: string
+  beds: string
+  baths: string
+  areaMin: string
+  areaMax: string
+  garages: string
+  sortBy: string
 }
 
-function FilterButton({ label, active, onClick }: { label: string, active: boolean, onClick: () => void }) {
+const ITEMS_PER_PAGE = 12
+
+export default function ListingPage() {
+  const [properties, setProperties] = useState<PropertyData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [filters, setFilters] = useState<FilterState>({
+    search: '',
+    propertyType: 'all',
+    priceMin: '',
+    priceMax: '',
+    beds: '',
+    baths: '',
+    areaMin: '',
+    areaMax: '',
+    garages: '',
+    sortBy: 'newest',
+  })
+
+  useEffect(() => {
+    loadProperties()
+  }, [])
+
+  async function loadProperties() {
+    setLoading(true)
+    const data = await getProperties({ status: 'active' })
+    setProperties(data)
+    setLoading(false)
+  }
+
+  const filteredProperties = useMemo(() => {
+    let result = [...properties]
+
+    // Filter by property type
+    if (filters.propertyType !== 'all') {
+      result = result.filter(p => p.property_type === filters.propertyType)
+    }
+
+    // Filter by search
+    if (filters.search) {
+      const search = filters.search.toLowerCase()
+      result = result.filter(p => 
+        p.title?.toLowerCase().includes(search) ||
+        p.neighborhood?.toLowerCase().includes(search) ||
+        p.address?.toLowerCase().includes(search)
+      )
+    }
+
+    // Filter by price
+    if (filters.priceMin) {
+      result = result.filter(p => p.price >= Number(filters.priceMin))
+    }
+    if (filters.priceMax) {
+      result = result.filter(p => p.price <= Number(filters.priceMax))
+    }
+
+    // Filter by bedrooms
+    if (filters.beds) {
+      const minBeds = filters.beds === '4' ? 4 : Number(filters.beds)
+      result = result.filter(p => {
+        if (filters.beds === '4') return p.beds >= 4
+        return p.beds >= minBeds
+      })
+    }
+
+    // Filter by bathrooms
+    if (filters.baths) {
+      result = result.filter(p => p.baths >= Number(filters.baths))
+    }
+
+    // Filter by garages
+    if (filters.garages) {
+      result = result.filter(p => p.parking_spaces >= Number(filters.garages))
+    }
+
+    // Filter by area
+    if (filters.areaMin) {
+      result = result.filter(p => p.area_sqm >= Number(filters.areaMin))
+    }
+    if (filters.areaMax) {
+      result = result.filter(p => p.area_sqm <= Number(filters.areaMax))
+    }
+
+    // Sort
+    switch (filters.sortBy) {
+      case 'price_asc':
+        result.sort((a, b) => a.price - b.price)
+        break
+      case 'price_desc':
+        result.sort((a, b) => b.price - a.price)
+        break
+      case 'area':
+        result.sort((a, b) => b.area_sqm - a.area_sqm)
+        break
+      case 'newest':
+      default:
+        result.sort((a, b) => {
+          const dateA = new Date(a.created_at || 0).getTime()
+          const dateB = new Date(b.created_at || 0).getTime()
+          return dateB - dateA
+        })
+    }
+
+    return result
+  }, [properties, filters])
+
+  const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE)
+  const paginatedProperties = filteredProperties.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
+
+  const clearFilters = () => {
+    setFilters({
+      search: '',
+      propertyType: 'all',
+      priceMin: '',
+      priceMax: '',
+      beds: '',
+      baths: '',
+      areaMin: '',
+      areaMax: '',
+      garages: '',
+      sortBy: 'newest',
+    })
+    setCurrentPage(1)
+  }
+
   return (
-    <button 
-      onClick={onClick}
-      className={cn(
-        "text-[10px] font-black uppercase tracking-[0.2em] transition-all relative pb-2 overflow-hidden",
-        active ? "text-[#1a1a1a]" : "text-slate-300 hover:text-slate-500"
-      )}
-    >
-      {label}
-      {active && (
-        <motion.div 
-          layoutId="filterUnderline"
-          className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#c5a059]"
+    <div className="min-h-screen bg-[var(--background)] pt-28 pb-20">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">
+            Imóveis à venda
+          </h1>
+          <p className="text-[var(--foreground)]/60">
+            Encontre o imóvel dos seus sonhos
+          </p>
+        </div>
+
+        {/* Filters */}
+        <PropertyFilters
+          filters={filters}
+          onChange={setFilters}
+          onClear={clearFilters}
+          resultCount={filteredProperties.length}
         />
-      )}
-    </button>
+
+        {/* Properties Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="bg-[var(--card)] rounded-2xl overflow-hidden animate-pulse">
+                <div className="aspect-[16/10] bg-[var(--muted)]" />
+                <div className="p-4 space-y-3">
+                  <div className="h-6 w-2/3 bg-[var(--muted)] rounded" />
+                  <div className="h-4 w-full bg-[var(--muted)] rounded" />
+                  <div className="h-4 w-1/2 bg-[var(--muted)] rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : paginatedProperties.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {paginatedProperties.map((property) => (
+                <PropertyCardML key={property.id} property={property} />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-12">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="p-3 rounded-xl bg-[var(--card)] border border-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--muted)] transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
+                    let pageNum
+                    if (totalPages <= 5) {
+                      pageNum = i + 1
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i
+                    } else {
+                      pageNum = currentPage - 2 + i
+                    }
+                    
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`w-10 h-10 rounded-lg font-medium transition-colors ${
+                          currentPage === pageNum
+                            ? 'bg-[var(--foreground)] text-[var(--background)]'
+                            : 'bg-[var(--card)] border border-[var(--border)] hover:bg-[var(--muted)]'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="p-3 rounded-xl bg-[var(--card)] border border-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--muted)] transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center py-20">
+            <p className="text-xl text-[var(--foreground)]/50 mb-4">
+              Nenhum imóvel encontrado
+            </p>
+            <button
+              onClick={clearFilters}
+              className="text-[var(--accent)] font-medium hover:underline"
+            >
+              Limpar filtros
+            </button>
+          </div>
+        )}
+      </div>
+      
+      <CompareBar />
+    </div>
   )
 }

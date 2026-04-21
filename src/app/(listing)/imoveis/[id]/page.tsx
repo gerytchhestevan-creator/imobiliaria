@@ -13,6 +13,8 @@ import {
 } from 'lucide-react'
 import { cn, formatCurrency } from '@/lib/utils'
 import { getPropertyById, type PropertyData } from '@/lib/supabase/properties'
+import { ContactForm } from '@/components/property/ContactForm'
+import { NeighborhoodPrice } from '@/components/property/NeighborhoodPrice'
 
 export default function PropertyDetailsPage() {
   const { id } = useParams()
@@ -165,6 +167,15 @@ export default function PropertyDetailsPage() {
           {/* Sidebar - Sticky Action */}
           <div className="lg:col-span-4">
             <div className="sticky top-32 space-y-8">
+              {/* Contact Form */}
+              <div className="p-6 bg-white border border-gray-200 rounded-2xl">
+                <h3 className="font-bold text-gray-900 mb-4">Fale com a gente</h3>
+                <ContactForm property={property} />
+              </div>
+
+              {/* Neighborhood Stats */}
+              <NeighborhoodPrice neighborhood={property.neighborhood} />
+
               {/* Economy Highlight */}
               <div className="p-10 bg-[#1a1a1a] text-white">
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#c5a059] mb-4 block">Vantagem do Modelo</span>

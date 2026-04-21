@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -33,7 +34,7 @@ export function Navbar() {
     <nav
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 py-6',
-        isScrolled ? 'bg-white/80 backdrop-blur-xl border-b border-slate-100 py-4' : 'bg-transparent'
+        isScrolled ? 'bg-[var(--card)]/80 backdrop-blur-xl border-b border-[var(--border)] py-4' : 'bg-transparent'
       )}
     >
       <div className="container mx-auto flex items-center justify-between">
@@ -43,9 +44,9 @@ export function Navbar() {
           </div>
           <span className={cn(
             "text-lg font-black tracking-[0.2em] uppercase transition-colors",
-            isScrolled || pathname !== '/' ? "text-[#1a1a1a]" : "text-white lg:text-[#1a1a1a]" 
+            isScrolled || pathname !== '/' ? "text-[var(--foreground)]" : "text-white lg:text-[var(--foreground)]"
           )}>
-            Imobi<span className="text-[#c5a059]">2%</span>
+            Imobi<span className="text-[var(--accent)]">2%</span>
           </span>
         </Link>
 
@@ -59,30 +60,31 @@ export function Navbar() {
             <Link 
               key={item.label}
               href={item.href} 
-              className={cn(
-                "text-[10px] font-black uppercase tracking-[0.2em] transition-colors relative group",
-                isScrolled || pathname !== '/' ? "text-slate-500 hover:text-[#1a1a1a]" : "text-slate-300 hover:text-white lg:text-slate-500 lg:hover:text-[#1a1a1a]"
-              )}
+className={cn(
+                 "text-[10px] font-black uppercase tracking-[0.2em] transition-colors relative group",
+                 isScrolled || pathname !== '/' ? "text-[var(--foreground)]/60 hover:text-[var(--foreground)]" : "text-white/80 hover:text-white lg:text-[var(--foreground)]/60 lg:hover:text-[var(--foreground)]"
+               )}
             >
               {item.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#c5a059] transition-all group-hover:w-full" />
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[var(--accent)] transition-all group-hover:w-full" />
             </Link>
           ))}
           
-          <Link 
-            href="/#vender" 
-            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] bg-[#1a1a1a] text-white px-6 py-3 hover:bg-[#c5a059] transition-all group"
+          <Link
+            href="/anunciar"
+            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] bg-[var(--foreground)] text-[var(--background)] px-6 py-3 hover:bg-[var(--accent)] transition-all group"
           >
-            Quero Vender
+            Anunciar
             <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
+          <ThemeToggle />
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button 
+        <button
           className={cn(
             "md:hidden p-2 transition-colors",
-            isScrolled || pathname !== '/' ? "text-[#1a1a1a]" : "text-white"
+            isScrolled || pathname !== '/' ? "text-[var(--foreground)]" : "text-white"
           )}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
@@ -97,12 +99,12 @@ export function Navbar() {
             initial={{ opacity: 0, scale: 0.95, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            className="absolute top-full left-4 right-4 bg-white p-8 shadow-2xl flex flex-col gap-6 md:hidden border border-slate-100 rounded-3xl mt-4"
+            className="absolute top-full left-4 right-4 bg-[var(--card)] p-8 shadow-2xl flex flex-col gap-6 md:hidden border border-[var(--border)] rounded-3xl mt-4"
           >
-            <Link href="/imoveis" className="text-sm font-black uppercase tracking-widest text-slate-800">Catálogo</Link>
-            <Link href="/#como-funciona" className="text-sm font-black uppercase tracking-widest text-slate-800">Como Funciona</Link>
-            <Link href="/#vender" className="w-full py-5 bg-[#1a1a1a] text-white text-center font-bold uppercase tracking-widest text-xs">
-              Quero Vender
+            <Link href="/imoveis" className="text-sm font-black uppercase tracking-widest text-[var(--foreground)]">Catálogo</Link>
+            <Link href="/#como-funciona" className="text-sm font-black uppercase tracking-widest text-[var(--foreground)]">Como Funciona</Link>
+            <Link href="/anunciar" className="w-full py-5 bg-[var(--foreground)] text-[var(--background)] text-center font-bold uppercase tracking-widest text-xs">
+              Anunciar
             </Link>
           </motion.div>
         )}

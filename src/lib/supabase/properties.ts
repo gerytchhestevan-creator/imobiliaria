@@ -16,6 +16,9 @@ export interface PropertyData {
   images?: string[]
   features?: string[]
   status?: string
+  owner_name?: string
+  owner_phone?: string
+  created_at?: string
 }
 
 // Mock data for preview when Supabase is not configured
@@ -171,4 +174,80 @@ export async function deleteProperty(id: string) {
   }
 
   return true
+}
+
+export async function getPendingProperties() {
+  if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
+
+  const { data, error } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching pending properties:', error)
+    throw error
+  }
+
+  return data as PropertyData[]
+}
+
+export async function approveProperty(id: string) {
+  if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
+
+  const { data, error } = await supabase
+    .from('properties')
+    .update({ status: 'active' })
+    .eq('id', id)
+    .select()
+
+  if (error) {
+    console.error('Error approving property:', error)
+    throw error
+  }
+
+  return data[0]
+}
+
+export async function rejectProperty(id: string) {
+  if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
+
+  const { data, error } = await supabase
+    .from('properties')
+    .update({ status: 'rejected' })
+    .eq('id', id)
+    .select()
+
+  if (error) {
+    console.error('Error rejecting property:', error)
+    throw error
+  }
+
+  return data[0]
+}
+
+export async function getPropertyStats() {
+  if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
+
+  const { data: pending } = await supabase
+    .from('properties')
+    .select('id', { count: 'exact' })
+    .eq('status', 'pending')
+
+  const { data: active } = await supabase
+    .from('properties')
+    .select('id', { count: 'exact' })
+    .eq('status', 'active')
+
+  const { data: rejected } = await supabase
+    .from('properties')
+    .select('id', { count: 'exact' })
+    .eq('status', 'rejected')
+
+  return {
+    pending: pending?.length || 0,
+    active: active?.length || 0,
+    rejected: rejected?.length || 0
+  }
 }
