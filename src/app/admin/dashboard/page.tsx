@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { 
   Plus, Search, Edit2, Trash2, 
   Eye, BarChart3, Home, Users, 
   TrendingUp, CheckCircle, Clock, XCircle, Loader2,
-  Check, X, Phone, MapPin
+  Check, X, Phone, MapPin, Upload
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn, formatCurrency } from '@/lib/utils'
@@ -23,6 +24,7 @@ import {
 type Tab = 'pending' | 'active' | 'all'
 
 export default function AdminDashboard() {
+  const router = useRouter()
   const [properties, setProperties] = useState<PropertyData[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<Tab>('pending')
@@ -62,13 +64,6 @@ export default function AdminDashboard() {
     }
   }
 
-  const handleEditImages = async (property: PropertyData) => {
-    // Navigate to edit page for this property
-    // We'll need to create this page or use a modal
-    // For now, let's just show an alert and navigate to the new property page
-    // In a full implementation, this would open an edit modal
-    alert('Funcionalidade de edição de imagens em desenvolvimento. Por enquanto, edite o imóvel completo em "/admin/imoveis/novo" ou aguarde a implementação completa.')
-  }
 
   const handleReject = async (id: string) => {
     if (confirm('Rejeitar este imóvel? Ele não ficará visível no site.')) {
@@ -79,6 +74,10 @@ export default function AdminDashboard() {
         alert('Erro ao rejeitar imóvel.')
       }
     }
+  }
+
+  const goToEdit = (property: PropertyData) => {
+    router.push(`/admin/imoveis/${property.id}/editar`)
   }
 
   const handleDelete = async (id: string) => {
@@ -267,13 +266,13 @@ function PropertyCard({
               <Eye className="w-4 h-4" />
               Ver
             </Link>
-            <button 
-              onClick={() => handleEditImages(property)}
+            <Link 
+              href={`/admin/imoveis/${property.id}/editar`}
               className="flex-1 py-3 text-blue-600 font-bold text-sm flex items-center justify-center gap-2 border-l border-[var(--border)] hover:bg-blue-50 transition-colors"
             >
               <Upload className="w-4 h-4" />
               Editar Fotos
-            </button>
+            </Link>
             <button 
               onClick={onDelete}
               className="flex-1 py-3 text-red-500 font-bold text-sm flex items-center justify-center gap-2 border-l border-[var(--border)] hover:bg-red-50 transition-colors"
