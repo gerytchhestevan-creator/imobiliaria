@@ -77,9 +77,7 @@ className={cn(
             Anunciar
             <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
-          <div className="ml-2 mt-1">
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
         </div>
 
         {/* Mobile Menu Toggle */}
