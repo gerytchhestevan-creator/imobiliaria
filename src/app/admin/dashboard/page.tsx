@@ -256,32 +256,28 @@ function PropertyCard({
             Rejeitar
           </button>
         )}
-        {!onApprove && !onReject && (
-          <>
-            <Link 
-              href={`/imoveis/${property.id}`}
-              target="_blank"
-              className="flex-1 py-3 text-[var(--foreground)]/60 font-bold text-sm flex items-center justify-center gap-2 hover:bg-[var(--muted)] transition-colors"
-            >
-              <Eye className="w-4 h-4" />
-              Ver
-            </Link>
-            <Link 
-              href={`/admin/imoveis/${property.id}/editar`}
-              className="flex-1 py-3 text-blue-600 font-bold text-sm flex items-center justify-center gap-2 border-l border-[var(--border)] hover:bg-blue-50 transition-colors"
-            >
-              <Upload className="w-4 h-4" />
-              Editar Fotos
-            </Link>
-            <button 
-              onClick={onDelete}
-              className="flex-1 py-3 text-red-500 font-bold text-sm flex items-center justify-center gap-2 border-l border-[var(--border)] hover:bg-red-50 transition-colors"
-            >
-              <Trash2 className="w-4 h-4" />
-              Excluir
-            </button>
-          </>
-        )}
+        <Link 
+          href={`/imoveis/${property.id}`}
+          target="_blank"
+          className="flex-1 py-3 text-[var(--foreground)]/60 font-bold text-sm flex items-center justify-center gap-2 hover:bg-[var(--muted)] transition-colors"
+        >
+          <Eye className="w-4 h-4" />
+          Ver
+        </Link>
+        <Link 
+          href={`/admin/imoveis/${property.id}/editar`}
+          className="flex-1 py-3 text-blue-600 font-bold text-sm flex items-center justify-center gap-2 border-l border-[var(--border)] hover:bg-blue-50 transition-colors"
+        >
+          <Upload className="w-4 h-4" />
+          Editar
+        </Link>
+        <button 
+          onClick={onDelete}
+          className="flex-1 py-3 text-red-500 font-bold text-sm flex items-center justify-center gap-2 border-l border-[var(--border)] hover:bg-red-50 transition-colors"
+        >
+          <Trash2 className="w-4 h-4" />
+          Excluir
+        </button>
       </div>
     </div>
   )
