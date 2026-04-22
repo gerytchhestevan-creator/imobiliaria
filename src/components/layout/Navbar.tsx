@@ -103,6 +103,10 @@ className={cn(
           >
             <Link href="/imoveis" className="text-sm font-black uppercase tracking-widest text-[var(--foreground)]">Catálogo</Link>
             <Link href="/#como-funciona" className="text-sm font-black uppercase tracking-widest text-[var(--foreground)]">Como Funciona</Link>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[var(--foreground)]/60">Tema</span>
+              <ThemeToggle />
+            </div>
             <Link href="/anunciar" className="w-full py-5 bg-[var(--foreground)] text-[var(--background)] text-center font-bold uppercase tracking-widest text-xs">
               Anunciar
             </Link>

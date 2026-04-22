@@ -7,6 +7,7 @@ import { PropertyFilters } from '@/components/property/PropertyFilters'
 import { getProperties, type PropertyData } from '@/lib/supabase/properties'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { CompareBar } from '@/components/property/CompareButton'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 interface FilterState {
   search: string
@@ -153,13 +154,15 @@ export default function ListingPage() {
     <div className="min-h-screen bg-[var(--background)] pt-28 pb-20">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">
-            Imóveis à venda
-          </h1>
-          <p className="text-[var(--foreground)]/60">
-            Encontre o imóvel dos seus sonhos
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">
+              Imóveis à venda
+            </h1>
+            <p className="text-[var(--foreground)]/60">
+              Encontre o imóvel dos seus sonhos
+            </p>
+          </div>
         </div>
 
         {/* Filters */}

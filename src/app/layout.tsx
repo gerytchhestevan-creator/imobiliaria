@@ -4,6 +4,8 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { CompareProvider } from "@/components/property/CompareProvider";
+import { CompareBar } from "@/components/property/CompareButton";
+import { FavoriteProvider } from "@/components/property/FavoriteProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,8 +41,11 @@ export default function RootLayout({
       <body className="font-sans">
         <ThemeProvider>
           <CompareProvider>
-            <Navbar />
-            {children}
+            <FavoriteProvider>
+              <Navbar />
+              <CompareBar />
+              {children}
+            </FavoriteProvider>
           </CompareProvider>
         </ThemeProvider>
       </body>

@@ -26,7 +26,7 @@
 }
 
 /* Force light mode on login page to prevent flash */
-html:global(.force-light) {
+html.force-light {
   --background: #fdfdfc !important;
   --foreground: #1c1c1c !important;
   --card: #ffffff !important;
@@ -35,7 +35,7 @@ html:global(.force-light) {
 }
 
 /* Force dark mode on login page when dark mode is set */
-html:global(.force-dark) {
+html.force-dark {
   --background: #0f0f11 !important;
   --foreground: #f3f4f6 !important;
   --card: #1a1a1e !important;

@@ -15,10 +15,11 @@ export function CompareButton({ property }: CompareButtonProps) {
   const { addToCompare, removeFromCompare, isInCompare, compareList } = useCompare()
   const [loading, setLoading] = useState(false)
 
-  const isAdded = isInCompare(property.id || '')
+  const isAdded = isInCompare(property.id)
   const isFull = compareList.length >= 4 && !isAdded
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
     if (isAdded) {
       removeFromCompare(property.id || '')
     } else if (!isFull) {

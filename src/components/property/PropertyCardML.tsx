@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
+import { useFavorite } from '@/components/property/FavoriteProvider'
 import { motion } from 'framer-motion'
 import { Bed, Bath, Car, Maximize, Heart, Share2 } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
@@ -24,10 +24,17 @@ export function PropertyCardML({ property }: PropertyCardMLProps) {
     }).format(price)
   }
 
-  const handleFavorite = (e: React.MouseEvent) => {
-    e.preventDefault()
-    // Implement favoriting logic
-  }
+   const { addToFavorites, removeFromFavorites, isInFavorites } = useFavorite()
+   
+   const handleFavorite = (e: React.MouseEvent) => {
+     e.preventDefault()
+     e.stopPropagation()
+     if (isInFavorites(property.id || '')) {
+       removeFromFavorites(property.id || '')
+     } else {
+       addToFavorites(property)
+     }
+   }
 
   const handleShare = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -48,7 +55,9 @@ export function PropertyCardML({ property }: PropertyCardMLProps) {
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className="group"
     >
-      <Link href={`/imoveis/${property.id}`} className="block bg-[var(--card)] border border-[var(--border)] rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
+      <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
+            onClick={() => window.location.href = `/imoveis/${property.id}`}
+            style={{ cursor: 'pointer' }}>
         {/* Image Container */}
         <div className="relative aspect-[16/10] bg-[var(--muted)] overflow-hidden">
           <motion.img
@@ -152,7 +161,7 @@ export function PropertyCardML({ property }: PropertyCardMLProps) {
             </div>
           )}
         </div>
-      </Link>
+       </div>
     </motion.div>
   )
 }

@@ -62,6 +62,14 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleEditImages = async (property: PropertyData) => {
+    // Navigate to edit page for this property
+    // We'll need to create this page or use a modal
+    // For now, let's just show an alert and navigate to the new property page
+    // In a full implementation, this would open an edit modal
+    alert('Funcionalidade de edição de imagens em desenvolvimento. Por enquanto, edite o imóvel completo em "/admin/imoveis/novo" ou aguarde a implementação completa.')
+  }
+
   const handleReject = async (id: string) => {
     if (confirm('Rejeitar este imóvel? Ele não ficará visível no site.')) {
       try {
@@ -210,7 +218,7 @@ function PropertyCard({
             <h3 className="font-bold text-[var(--foreground)] line-clamp-1">{property.title}</h3>
             <StatusBadge status={property.status || 'pending'} />
           </div>
-          
+
           <p className="font-black text-[var(--accent)] text-lg mb-2">
             {formatCurrency(property.price)}
           </p>
@@ -259,6 +267,13 @@ function PropertyCard({
               <Eye className="w-4 h-4" />
               Ver
             </Link>
+            <button 
+              onClick={() => handleEditImages(property)}
+              className="flex-1 py-3 text-blue-600 font-bold text-sm flex items-center justify-center gap-2 border-l border-[var(--border)] hover:bg-blue-50 transition-colors"
+            >
+              <Upload className="w-4 h-4" />
+              Editar Fotos
+            </button>
             <button 
               onClick={onDelete}
               className="flex-1 py-3 text-red-500 font-bold text-sm flex items-center justify-center gap-2 border-l border-[var(--border)] hover:bg-red-50 transition-colors"
