@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
@@ -10,10 +11,12 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export default function LoginPage() {
+  const router = useRouter()
   const [isRegistering, setIsRegistering] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   
   const [formData, setFormData] = useState({
     email: 'teste@teste.com',
@@ -21,6 +24,15 @@ export default function LoginPage() {
     name: '',
     phone: ''
   })
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        window.location.replace('/admin/dashboard')
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,11 +61,9 @@ export default function LoginPage() {
           password: formData.password
         })
 
-        if (error) throw error
+        console.log('Login response:', data, error)
 
-        if (data?.session) {
-          window.location.href = '/'
-        }
+        if (error) throw error
       }
     } catch (err: any) {
       setError(err.message || 'Erro ao fazer login.')

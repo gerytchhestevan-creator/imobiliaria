@@ -3,10 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { PropertyCardML } from '@/components/property/PropertyCardML'
-import { PropertyFilters } from '@/components/property/PropertyFilters'
 import { getProperties, type PropertyData } from '@/lib/supabase/properties'
-import { MessageCircle, ArrowUpRight } from 'lucide-react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { MessageCircle, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { CompareBar } from '@/components/property/CompareButton'
@@ -117,45 +115,17 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--background)]">
-      {/* Header estilo search engine */}
-      <header className="bg-[var(--card)] border-b border-[var(--border)] sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            {/* Logo + Nav Links */}
-            <div className="flex items-center gap-8">
-              <Link href="/" className="flex items-center gap-2 group">
-                <div className="w-8 h-8 bg-[var(--foreground)] flex items-center justify-center text-[var(--background)] font-serif text-lg">
-                  I
-                </div>
-                <span className="text-lg font-black tracking-[0.2em] uppercase">
-                  Imobi<span className="text-[var(--accent)]">2%</span>
-                </span>
-              </Link>
-              
-              <nav className="hidden md:flex items-center gap-6">
-                <Link href="/imoveis" className="text-sm font-medium text-[var(--foreground)] hover:text-[var(--accent)]">Comprar</Link>
-                <Link href="/anunciar" className="text-sm font-medium text-[var(--foreground)] hover:text-[var(--accent)]">Alugar</Link>
-                <Link href="#como-funciona" className="text-sm font-medium text-[var(--foreground)] hover:text-[var(--accent)]">Como Funciona</Link>
-                <Link href="#vantagens" className="text-sm font-medium text-[var(--foreground)] hover:text-[var(--accent)]">Vantagens</Link>
-              </nav>
-            </div>
-
-            {/* Anunciar Button */}
-            <Link 
-              href="/anunciar"
-              className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-[var(--foreground)] text-[var(--background)] px-4 py-2 rounded-lg hover:bg-[var(--accent)] transition-colors"
-            >
-              Anunciar Imóvel
-            </Link>
-          </div>
-        </div>
-      </header>
+    <main className="min-h-screen bg-[var(--background)] pt-20">
+      {/* Header removido pois o Navbar global já cuida disso */}
 
       {/* Filters */}
-      <div className="bg-[var(--card)] border-b border-[var(--border)] sticky top-[73px] z-40">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+      <header className="bg-[var(--card)] border-b border-[var(--border)] sticky top-0 z-50">
+        <div className="container mx-auto py-4">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col lg:flex-row lg:items-center gap-4"
+          >
             <div className="flex flex-wrap gap-2">
               {[
                 { value: 'all', label: 'Comprar' },
@@ -197,24 +167,29 @@ export default function Home() {
               <option value="price_asc">Menor preço</option>
               <option value="price_desc">Maior preço</option>
             </select>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </header>
 
       {/* Results */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+      <div className="container mx-auto py-8">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="flex items-center justify-between mb-6"
+        >
           <p className="text-[var(--foreground)]/70">
             <span className="font-bold text-[var(--foreground)]">{filteredProperties.length}</span> imóveis encontrados
           </p>
           <Link href="/imoveis" className="text-sm text-[var(--accent)] font-medium">
             Ver todos →
           </Link>
-        </div>
+        </motion.div>
 
         {/* Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="bg-[var(--card)] rounded-2xl overflow-hidden animate-pulse">
                 <div className="aspect-[16/10] bg-[var(--muted)]" />
@@ -227,11 +202,17 @@ export default function Home() {
           </div>
         ) : paginatedProperties.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
               {paginatedProperties.map((property) => (
                 <PropertyCardML key={property.id} property={property} />
               ))}
-            </div>
+            </motion.div>
 
             {/* Pagination */}
             {totalPages > 1 && (
@@ -269,78 +250,154 @@ export default function Home() {
       </div>
 
       {/* Section: Como Funciona */}
-      <section id="como-funciona" className="py-20 bg-[var(--card)] border-t border-[var(--border)]">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12"> Como Funciona</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[var(--accent)] rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold">1</span>
-              </div>
-              <h3 className="font-bold mb-2">Anuncie</h3>
-              <p className="text-[var(--foreground)]/60">Cadastre seu imóvel em minutos</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[var(--accent)] rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold">2</span>
-              </div>
-              <h3 className="font-bold mb-2">Negociamos</h3>
-              <p className="text-[var(--foreground)]/60">Nossa equipe faz a curadoria e negociação</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[var(--accent)] rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold">3</span>
-              </div>
-              <h3 className="font-bold mb-2">Venda</h3>
-              <p className="text-[var(--foreground)]/60">Feche o negócio com apenas 2% de comissão</p>
+      <section id="como-funciona" className="py-32 bg-[var(--card)] border-t border-[var(--border)] overflow-hidden">
+        <div className="container mx-auto">
+          <div className="flex flex-col lg:flex-row gap-20 items-start">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="lg:w-1/3"
+            >
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)] mb-6 block">Fluxo Inteligente</span>
+              <h2 className="text-5xl md:text-6xl font-serif text-[var(--foreground)] leading-[0.9] mb-8">
+                Como <br /><span className="italic text-[var(--accent)]">Funciona.</span>
+              </h2>
+              <p className="text-lg text-[var(--foreground)]/60 font-light leading-relaxed">
+                Nossa metodologia foi desenhada para eliminar atritos, burocracia e custos desnecessários no processo de venda.
+              </p>
+            </motion.div>
+
+            <div className="lg:w-2/3 grid md:grid-cols-3 gap-12 relative">
+              {/* Steps */}
+              {[
+                {
+                  step: '01',
+                  title: 'Análise de Ativo',
+                  desc: 'Fazemos uma curadoria rigorosa e avaliação mercadológica do seu imóvel.'
+                },
+                {
+                  step: '02',
+                  title: 'Estratégia & Branding',
+                  desc: 'Criamos materiais de alto padrão para posicionar seu imóvel no mercado premium.'
+                },
+                {
+                  step: '03',
+                  title: 'Negociação Direta',
+                  desc: 'Acompanhamos todo o fechamento com apenas 2% de taxa de performance.'
+                }
+              ].map((item, i) => (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.2 }}
+                  className="relative group"
+                >
+                  <span className="text-6xl font-serif italic text-[var(--accent)]/20 mb-6 block group-hover:text-[var(--accent)] transition-colors duration-500">
+                    {item.step}
+                  </span>
+                  <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">{item.title}</h3>
+                  <p className="text-sm text-[var(--foreground)]/50 leading-relaxed">{item.desc}</p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Section: Vantagens */}
-      <section id="vantagens" className="py-20 border-t border-[var(--border)]">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12"> Vantagens</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--border)]">
-              <h3 className="font-bold text-lg mb-2">Apenas 2%</h3>
-              <p className="text-[var(--foreground)]/60">Comissão muito menor que o mercado</p>
-            </div>
-            <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--border)]">
-              <h3 className="font-bold text-lg mb-2">Sem Exclusividade</h3>
-              <p className="text-[var(--foreground)]/60">Anuncie em quantas plataformas quiser</p>
-            </div>
-            <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--border)]">
-              <h3 className="font-bold text-lg mb-2">Curadoria Jurídica</h3>
-              <p className="text-[var(--foreground)]/60">Verificação completa da documentação</p>
-            </div>
-            <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--border)]">
-              <h3 className="font-bold text-lg mb-2">Atendimento Personalizado</h3>
-              <p className="text-[var(--foreground)]/60">Suporte dedicado durante todo o processo</p>
-            </div>
+      <section id="vantagens" className="py-32 border-t border-[var(--border)] bg-[var(--background)]">
+        <div className="container mx-auto">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-20"
+          >
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)] mb-6 block">Por que nós?</span>
+            <h2 className="text-5xl md:text-6xl font-serif text-[var(--foreground)] mb-8">
+              Vantagens <span className="italic text-[var(--accent)]">Exclusivas.</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {[
+              {
+                title: 'Apenas 2%',
+                desc: 'A menor taxa de performance do mercado, focada no seu lucro líquido.',
+                icon: <ArrowUpRight className="w-5 h-5" />
+              },
+              {
+                title: 'Sem Exclusividade',
+                desc: 'Liberdade total para anunciar onde quiser. Zero fidelidade contratual.',
+                icon: <MessageCircle className="w-5 h-5" />
+              },
+              {
+                title: 'Curadoria Jurídica',
+                desc: 'Segurança completa em todas as etapas, da análise ao contrato final.',
+                icon: <ArrowUpRight className="w-5 h-5" />
+              },
+              {
+                title: 'Branding Premium',
+                desc: 'Posicionamento de alto nível para atrair os compradores certos.',
+                icon: <MessageCircle className="w-5 h-5" />
+              }
+            ].map((v, i) => (
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="bg-[var(--card)] p-10 rounded-[40px] border border-[var(--border)] hover:border-[var(--accent)] transition-all duration-500 group"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-[var(--foreground)] text-[var(--background)] flex items-center justify-center mb-8 group-hover:bg-[var(--accent)] group-hover:text-[var(--foreground)] transition-colors">
+                  {v.icon}
+                </div>
+                <h3 className="font-bold text-xl mb-4">{v.title}</h3>
+                <p className="text-sm text-[var(--foreground)]/50 leading-relaxed">{v.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-[var(--foreground)] text-[var(--background)]">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pronto para vender ou comprar?</h2>
-          <p className="mb-8 opacity-80">Fale com nossa equipe</p>
-          <Link 
-            href="https://wa.me/5511999999999"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--accent)] text-[var(--foreground)] font-bold rounded-xl hover:opacity-90 transition-opacity"
+      <section className="py-32 bg-[var(--foreground)] text-[var(--background)] relative overflow-hidden">
+        {/* Decoration */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--accent)]/10 rounded-full -mr-48 -mt-48 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--accent)]/10 rounded-full -ml-48 -mb-48 blur-3xl" />
+
+        <div className="container mx-auto text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
           >
-            <MessageCircle className="w-5 h-5" />
-            Falar no WhatsApp
-          </Link>
+            <h2 className="text-5xl md:text-7xl font-serif mb-8 max-w-4xl mx-auto leading-tight">
+              Pronto para vender seu imóvel de forma <span className="italic text-[var(--accent)]">inteligente?</span>
+            </h2>
+            <p className="text-xl mb-12 opacity-60 font-light">Converse com um de nossos especialistas agora mesmo.</p>
+            <a 
+              href="https://wa.me/5542998332506?text=Olá!%20Gostaria%20de%20falar%20com%20um%20especialista."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-4 px-12 py-6 bg-[var(--accent)] text-[var(--foreground)] font-black uppercase tracking-widest text-xs rounded-2xl hover:scale-105 transition-all shadow-2xl"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Falar no WhatsApp
+            </a>
+          </motion.div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="py-12 border-t border-[var(--border)]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-[var(--foreground)]/60">
               © 2026 Imobi2% — Mercado imobiliário Inteligente.
@@ -352,6 +409,8 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      
+      <CompareBar />
     </main>
   )
 }

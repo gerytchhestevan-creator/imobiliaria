@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from './client'
+import { getSupabase, isSupabaseConfigured } from './client'
 
 export interface PropertyData {
   id?: string
@@ -80,7 +80,7 @@ export async function getProperties(filters?: { type?: string, status?: string }
     return filtered
   }
 
-  let query = supabase
+  let query = getSupabase()
     .from('properties')
     .select('*')
     .order('created_at', { ascending: false })
@@ -110,7 +110,7 @@ export async function getPropertyById(id: string) {
     return MOCK_PROPERTIES.find(p => p.id === id) || null
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('properties')
     .select('*')
     .eq('id', id)
@@ -130,7 +130,7 @@ export async function createProperty(property: Omit<PropertyData, 'id'>) {
     throw new Error('Supabase not configured.')
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('properties')
     .insert([property])
     .select()
@@ -146,7 +146,7 @@ export async function createProperty(property: Omit<PropertyData, 'id'>) {
 export async function updateProperty(id: string, updates: Partial<PropertyData>) {
   if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('properties')
     .update(updates)
     .eq('id', id)
@@ -163,7 +163,7 @@ export async function updateProperty(id: string, updates: Partial<PropertyData>)
 export async function deleteProperty(id: string) {
   if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
 
-  const { error } = await supabase
+  const { error } = await getSupabase()
     .from('properties')
     .delete()
     .eq('id', id)
@@ -179,7 +179,7 @@ export async function deleteProperty(id: string) {
 export async function getPendingProperties() {
   if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('properties')
     .select('*')
     .eq('status', 'pending')
@@ -196,7 +196,7 @@ export async function getPendingProperties() {
 export async function approveProperty(id: string) {
   if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('properties')
     .update({ status: 'active' })
     .eq('id', id)
@@ -213,7 +213,7 @@ export async function approveProperty(id: string) {
 export async function rejectProperty(id: string) {
   if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('properties')
     .update({ status: 'rejected' })
     .eq('id', id)
@@ -230,17 +230,17 @@ export async function rejectProperty(id: string) {
 export async function getPropertyStats() {
   if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
 
-  const { data: pending } = await supabase
+  const { data: pending } = await getSupabase()
     .from('properties')
     .select('id', { count: 'exact' })
     .eq('status', 'pending')
 
-  const { data: active } = await supabase
+  const { data: active } = await getSupabase()
     .from('properties')
     .select('id', { count: 'exact' })
     .eq('status', 'active')
 
-  const { data: rejected } = await supabase
+  const { data: rejected } = await getSupabase()
     .from('properties')
     .select('id', { count: 'exact' })
     .eq('status', 'rejected')
@@ -250,4 +250,30 @@ export async function getPropertyStats() {
     active: active?.length || 0,
     rejected: rejected?.length || 0
   }
+}
+
+export async function uploadPropertyImage(file: File, propertyId: string) {
+  if (!isSupabaseConfigured) throw new Error('Supabase not configured.')
+
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${propertyId}/${Date.now()}.${fileExt}`
+
+  const client = getSupabase()
+  const { data, error } = await client.storage
+    .from('imoveis')
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    })
+
+  if (error) {
+    console.error('Error uploading image:', error)
+    throw error
+  }
+
+  const { data: { publicUrl } } = client.storage
+    .from('imoveis')
+    .getPublicUrl(fileName)
+
+  return publicUrl
 }

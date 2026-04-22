@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://jqarynucgpkzvoegmcup.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxYXJ5bnVjZ3BrenZvZWdtY3VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MDk2NTAsImV4cCI6MjA5MjI4NTY1MH0.fTD4Lg409zTAllufMMGAm1HnaYWYWDyeQiOGuZpR1jM"
+  }
+}

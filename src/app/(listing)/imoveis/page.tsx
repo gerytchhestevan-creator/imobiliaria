@@ -151,27 +151,33 @@ export default function ListingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)] pt-28 pb-20">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">
-              Imóveis à venda
+    <div className="min-h-screen bg-[var(--background)] pt-24 pb-20">
+      <div className="container mx-auto">
+        {/* Banner Header */}
+        <div className="mb-12 py-12 border-b border-[var(--border)]">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-4xl md:text-6xl font-serif text-[var(--foreground)] mb-4 tracking-tight">
+              Seu novo <span className="italic text-[var(--accent)]">capítulo</span> começa aqui.
             </h1>
-            <p className="text-[var(--foreground)]/60">
-              Encontre o imóvel dos seus sonhos
+            <p className="text-lg text-[var(--foreground)]/60 max-w-2xl font-light">
+              Explore nossa curadoria de imóveis exclusivos, selecionados para quem busca o equilíbrio perfeito entre design, localização e valor justo.
             </p>
-          </div>
+          </motion.div>
         </div>
 
         {/* Filters */}
-        <PropertyFilters
-          filters={filters}
-          onChange={setFilters}
-          onClear={clearFilters}
-          resultCount={filteredProperties.length}
-        />
+        <div className="sticky top-[80px] z-30 mb-10">
+          <PropertyFilters
+            filters={filters}
+            onChange={setFilters}
+            onClear={clearFilters}
+            resultCount={filteredProperties.length}
+          />
+        </div>
 
         {/* Properties Grid */}
         {loading ? (
@@ -189,7 +195,7 @@ export default function ListingPage() {
           </div>
         ) : paginatedProperties.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {paginatedProperties.map((property) => (
                 <PropertyCardML key={property.id} property={property} />
               ))}

@@ -33,17 +33,17 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 py-6',
-        isScrolled ? 'bg-[var(--card)]/80 backdrop-blur-xl border-b border-[var(--border)] py-4' : 'bg-transparent'
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
+        isScrolled ? 'bg-[var(--card)]/80 backdrop-blur-xl border-b border-[var(--border)] py-4' : 'bg-transparent py-6'
       )}
     >
-      <div className="container mx-auto flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-8 h-8 bg-[#1a1a1a] flex items-center justify-center text-white font-serif text-lg transition-transform group-hover:rotate-12">
+      <div className="max-w-[1200px] mx-auto px-8 md:px-12 flex items-center justify-between w-full">
+        <Link href="/" className="flex items-center gap-3 group shrink-0">
+          <div className="w-9 h-9 bg-[var(--foreground)] flex items-center justify-center text-[var(--background)] font-serif text-xl transition-transform group-hover:rotate-12">
             I
           </div>
           <span className={cn(
-            "text-lg font-black tracking-[0.2em] uppercase transition-colors",
+            "text-xl font-black tracking-[0.2em] uppercase transition-colors",
             isScrolled || pathname !== '/' ? "text-[var(--foreground)]" : "text-white lg:text-[var(--foreground)]"
           )}>
             Imobi<span className="text-[var(--accent)]">2%</span>
@@ -51,33 +51,39 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-12">
-          {[
-            { label: 'Catálogo', href: '/imoveis' },
-            { label: 'Como Funciona', href: '/#como-funciona' },
-            { label: 'Vantagens', href: '/#como-funciona' } // Advantages are in the same section for now
-          ].map((item) => (
-            <Link 
-              key={item.label}
-              href={item.href} 
-className={cn(
-                 "text-[10px] font-black uppercase tracking-[0.2em] transition-colors relative group",
-                 isScrolled || pathname !== '/' ? "text-[var(--foreground)]/60 hover:text-[var(--foreground)]" : "text-white/80 hover:text-white lg:text-[var(--foreground)]/60 lg:hover:text-[var(--foreground)]"
-               )}
-            >
-              {item.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[var(--accent)] transition-all group-hover:w-full" />
-            </Link>
-          ))}
+        <div className="hidden md:flex items-center gap-10">
+          <div className="flex items-center gap-8">
+            {[
+              { label: 'Comprar', href: '/imoveis' },
+              { label: 'Como Funciona', href: '/#como-funciona' },
+              { label: 'Vantagens', href: '/#vantagens' }
+            ].map((item) => (
+              <Link 
+                key={item.label}
+                href={item.href} 
+                className={cn(
+                  "text-[10px] font-black uppercase tracking-[0.2em] transition-colors relative group py-2",
+                  isScrolled || pathname !== '/' ? "text-[var(--foreground)]/60 hover:text-[var(--foreground)]" : "text-white/80 hover:text-white lg:text-[var(--foreground)]/60 lg:hover:text-[var(--foreground)]"
+                )}
+              >
+                {item.label}
+                <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[var(--accent)] transition-all group-hover:w-full" />
+              </Link>
+            ))}
+          </div>
           
-          <Link
-            href="/anunciar"
-            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] bg-[var(--foreground)] text-[var(--background)] px-6 py-3 hover:bg-[var(--accent)] transition-all group"
-          >
-            Anunciar
-            <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
-          <ThemeToggle />
+          <div className="flex items-center gap-4 border-l border-[var(--border)] pl-10">
+            <ThemeToggle />
+            <a
+              href="https://wa.me/5542998332506?text=Olá!%20Quero%20anunciar%20um%20imóvel."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] bg-[var(--foreground)] text-[var(--background)] px-6 py-3.5 hover:bg-[var(--accent)] hover:text-[var(--foreground)] transition-all group"
+            >
+              Anunciar
+              <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+          </div>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -107,9 +113,9 @@ className={cn(
               <span className="text-sm text-[var(--foreground)]/60">Tema</span>
               <ThemeToggle />
             </div>
-            <Link href="/anunciar" className="w-full py-5 bg-[var(--foreground)] text-[var(--background)] text-center font-bold uppercase tracking-widest text-xs">
+            <a href="https://wa.me/5542998332506?text=Olá!%20Quero%20anunciar%20um%20imóvel." target="_blank" rel="noopener noreferrer" className="w-full py-5 bg-green-600 text-white text-center font-bold uppercase tracking-widest text-xs">
               Anunciar
-            </Link>
+            </a>
           </motion.div>
         )}
       </AnimatePresence>

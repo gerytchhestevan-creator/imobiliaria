@@ -31,20 +31,8 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Only protect admin routes, not /anunciar or /login
-  const isAdminRoute = pathname.startsWith('/admin')
-
-  // Only check session for admin routes
-  if (isAdminRoute) {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
-
-    if (!session) {
-      const url = new URL('/login', request.url)
-      url.searchParams.set('redirect', pathname)
-      return NextResponse.redirect(url)
-    }
+  if (pathname === '/anunciar') {
+    return NextResponse.redirect('https://wa.me/5542998332506?text=Olá!%20Quero%20anunciar%20um%20imóvel.')
   }
 
   return supabaseResponse

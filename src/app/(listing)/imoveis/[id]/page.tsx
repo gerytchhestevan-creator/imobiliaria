@@ -15,6 +15,7 @@ import { cn, formatCurrency } from '@/lib/utils'
 import { getPropertyById, type PropertyData } from '@/lib/supabase/properties'
 import { ContactForm } from '@/components/property/ContactForm'
 import { NeighborhoodPrice } from '@/components/property/NeighborhoodPrice'
+import { InvestmentCalculator } from '@/components/property/InvestmentCalculator'
 
 export default function PropertyDetailsPage() {
   const { id } = useParams()
@@ -60,51 +61,48 @@ export default function PropertyDetailsPage() {
   const whatsappMessage = encodeURIComponent(`Olá! Gostaria de mais informações sobre o imóvel: ${property.title} (ID: ${property.id}).`)
 
   return (
-    <div className="min-h-screen bg-[#fdfdfc] pb-40">
+    <div className="min-h-screen bg-[var(--background)] pb-40">
       {/* Editorial Header */}
-      <div className="pt-32 pb-12 border-b border-slate-100">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-end gap-12">
-          <div className="max-w-3xl">
+      <div className="pt-32 pb-20 border-b border-[var(--border)]">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl">
             <button 
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-[#c5a059] transition-colors mb-8 group"
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[var(--foreground)]/40 hover:text-[var(--accent)] transition-all mb-12 group"
             >
               <MoveLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
               Voltar ao Acervo
             </button>
             
-            <div className="flex items-center gap-2 text-[#c5a059] font-black text-[10px] uppercase tracking-[0.3em] mb-4">
-              <MapPin className="w-3 h-3" />
-              {property.neighborhood}
+            <div className="flex items-center gap-3 text-[var(--accent)] font-black text-[10px] uppercase tracking-[0.4em] mb-6">
+              <span className="w-8 h-[1px] bg-[var(--accent)]" />
+              {property.neighborhood} • {property.city || 'São Paulo'}
             </div>
             
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-[#1a1a1a] leading-tight mb-2">
-              {property.title}
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-[var(--foreground)] leading-[0.85] mb-8 tracking-tighter">
+              {property.title.split(' ').map((word, i) => (
+                <span key={i} className={cn(i % 2 === 1 && "italic font-normal text-[var(--accent)]")}>
+                  {word}{' '}
+                </span>
+              ))}
             </h1>
-          </div>
-          
-          <div className="text-right">
-             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Valor do Ativo</span>
-             <p className="text-4xl md:text-6xl font-light text-[#1a1a1a] font-mono tracking-tighter">
-                {formatCurrency(property.price)}
-             </p>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-6 mt-16">
-        <div className="grid lg:grid-cols-12 gap-16">
-          {/* Main Visual Content */}
+      <div className="container mx-auto mt-20">
+        <div className="grid lg:grid-cols-12 gap-20">
+          {/* Main Content */}
           <div className="lg:col-span-8">
-            {/* Gallery */}
-            <div className="relative aspect-[16/9] bg-slate-100 overflow-hidden mb-6">
+            {/* Main Image */}
+            <div className="relative aspect-[16/10] bg-[var(--muted)] overflow-hidden rounded-3xl mb-8 group">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeImage}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8 }}
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                   className="absolute inset-0"
                 >
                   <Image
@@ -116,18 +114,26 @@ export default function PropertyDetailsPage() {
                   />
                 </motion.div>
               </AnimatePresence>
+              
+              {/* Float Badge */}
+              <div className="absolute bottom-8 left-8 bg-white/90 backdrop-blur-xl px-6 py-3 rounded-full shadow-2xl">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[var(--foreground)]/40 mb-1">Preço sob consulta</p>
+                <p className="text-2xl font-light text-[var(--foreground)] font-mono">{formatCurrency(property.price)}</p>
+              </div>
             </div>
             
-            {/* Thumbnails */}
+            {/* Gallery Grid / Thumbnails */}
             {images.length > 1 && (
-              <div className="flex gap-4 mb-16">
+              <div className="grid grid-cols-4 md:grid-cols-6 gap-4 mb-20">
                 {images.map((img, i) => (
                   <button 
                     key={i}
                     onClick={() => setActiveImage(i)}
                     className={cn(
-                      "relative w-24 aspect-square overflow-hidden border-2 transition-all duration-300",
-                      activeImage === i ? "border-[#c5a059] opacity-100" : "border-transparent opacity-50 grayscale hover:opacity-100"
+                      "relative aspect-square rounded-2xl overflow-hidden transition-all duration-500",
+                      activeImage === i 
+                        ? "ring-2 ring-[var(--accent)] scale-95" 
+                        : "opacity-40 grayscale hover:opacity-100 hover:grayscale-0"
                     )}
                   >
                     <Image src={img} alt="" fill className="object-cover" />
@@ -136,88 +142,104 @@ export default function PropertyDetailsPage() {
               </div>
             )}
 
-            {/* Structured Specs */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-slate-100 mb-16">
+            {/* Quick Specs */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-12 py-16 border-y border-[var(--border)] mb-20">
               <Spec icon={<Maximize className="w-5 h-5" />} label="Área Útil" value={`${property.area_sqm} m²`} />
-              <Spec icon={<Bed className="w-5 h-5" />} label="Dormitórios" value={property.beds.toString()} />
+              <Spec icon={<Bed className="w-5 h-5" />} label="Suítes" value={property.beds.toString()} />
               <Spec icon={<Bath className="w-5 h-5" />} label="Banheiros" value={property.baths.toString()} />
               <Spec icon={<Car className="w-5 h-5" />} label="Vagas" value={property.parking_spaces.toString()} />
             </div>
 
-            {/* Description Editorial */}
-            <div className="max-w-2xl">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-8">Memória Descritiva</h3>
-              <p className="text-xl text-slate-600 font-light leading-relaxed mb-12">
-                {property.description}
-              </p>
-              
-              {property.features && property.features.length > 0 && (
-                <div className="grid grid-cols-2 gap-y-4 gap-x-12 mb-24">
-                  {property.features.map(f => (
-                    <div key={f} className="flex items-center gap-3 text-sm text-slate-600 font-medium">
-                      <CheckCircle2 className="w-4 h-4 text-[#c5a059]" />
-                      {f}
-                    </div>
-                  ))}
+            {/* Content Sections */}
+            <div className="max-w-3xl space-y-24">
+              <section>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--foreground)]/30 mb-10 flex items-center gap-4">
+                  <span className="w-12 h-[1px] bg-[var(--border)]" />
+                  Memória Descritiva
+                </h3>
+                <p className="text-lg md:text-xl text-[var(--foreground)]/80 font-normal leading-relaxed mb-12 whitespace-pre-wrap">
+                  {property.description}
+                </p>
+                
+                {property.features && property.features.length > 0 && (
+                  <div className="grid grid-cols-2 gap-y-6 gap-x-12">
+                    {property.features.map(f => (
+                      <div key={f} className="flex items-center gap-4 text-sm text-[var(--foreground)]/70">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* Economy Section for Mobile */}
+              <section className="lg:hidden">
+                <div className="p-10 bg-[var(--foreground)] text-[var(--background)] rounded-[40px]">
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--accent)] mb-6 block text-center">Inteligência Imobiliária</span>
+                  <h3 className="text-3xl font-serif text-center mb-8 italic">Você economiza <span className="text-[var(--accent)]">{formatCurrency(economy)}</span> neste ativo.</h3>
+                  <Link 
+                    href={`https://wa.me/5542998332506?text=${whatsappMessage}`}
+                    target="_blank"
+                    className="w-full py-5 bg-[var(--accent)] text-[var(--foreground)] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 hover:scale-[1.02] transition-all rounded-2xl"
+                  >
+                    Falar com Especialista
+                    <ArrowUpRight className="w-4 h-4" />
+                  </Link>
                 </div>
-              )}
+              </section>
             </div>
           </div>
 
-          {/* Sidebar - Sticky Action */}
+          {/* Sidebar */}
           <div className="lg:col-span-4">
-            <div className="sticky top-32 space-y-8">
-              {/* Contact Form */}
-              <div className="p-6 bg-white border border-gray-200 rounded-2xl">
-                <h3 className="font-bold text-gray-900 mb-4">Fale com a gente</h3>
+            <div className="sticky top-32 space-y-10">
+              {/* Form Card */}
+              <div className="p-10 bg-[var(--card)] border border-[var(--border)] rounded-[40px] shadow-sm">
+                <h3 className="text-2xl font-serif mb-8 text-center">Interesse no Ativo</h3>
                 <ContactForm property={property} />
               </div>
 
-              {/* Neighborhood Stats */}
-              <NeighborhoodPrice neighborhood={property.neighborhood} />
+              {/* Simulador Financeiro */}
+              <InvestmentCalculator price={property.price} />
 
-              {/* Economy Highlight */}
-              <div className="p-10 bg-[#1a1a1a] text-white">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#c5a059] mb-4 block">Vantagem do Modelo</span>
-                <p className="text-3xl font-serif italic mb-6">A única comissão de 2% do mercado.</p>
-                <div className="flex items-baseline gap-2 mb-8">
-                  <span className="text-4xl font-mono tracking-tighter text-[#c5a059]">{formatCurrency(economy)}</span>
-                </div>
-                <p className="text-xs text-slate-400 font-light leading-relaxed mb-10">
-                  Economia gerada apenas pela redução da comissão tradicional (6%) para o nosso modelo de performance.
+              {/* Economy Highlights */}
+              <div className="hidden lg:block p-10 bg-[var(--foreground)] text-[var(--background)] rounded-[40px] relative overflow-hidden group">
+                {/* Decoration */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/10 rounded-full -mr-16 -mt-16 blur-3xl transition-all group-hover:bg-[var(--accent)]/20" />
+                
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--accent)] mb-8 block">Vantagem Exclusiva</span>
+                <p className="text-3xl font-serif italic mb-10 leading-snug">
+                  Curadoria Jurídica e <span className="text-[var(--accent)]">2% de Taxa</span>.
                 </p>
+                
+                <div className="space-y-6 mb-12 py-6 border-t border-[var(--background)]/10">
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40">Economia estimada</span>
+                    <span className="text-3xl font-mono text-[var(--accent)] tracking-tighter">{formatCurrency(economy)}</span>
+                  </div>
+                </div>
+
                 <Link 
-                  href={`https://wa.me/5511999999999?text=${whatsappMessage}`}
+                  href={`https://wa.me/5542998332506?text=${whatsappMessage}`}
                   target="_blank"
-                  className="w-full py-5 bg-[#c5a059] text-[#1a1a1a] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 hover:bg-white transition-all group"
+                  className="w-full py-5 bg-[var(--accent)] text-[var(--foreground)] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 hover:bg-[var(--background)] hover:text-[var(--foreground)] transition-all rounded-2xl shadow-xl"
                 >
                   Agendar Visita Particular
-                  <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="w-4 h-4" />
                 </Link>
               </div>
 
-              {/* Trust Badges */}
-              <div className="p-8 border border-slate-100 space-y-6">
-                 <div className="flex gap-4">
-                   <ShieldCheck className="w-6 h-6 text-slate-300 flex-shrink-0" />
-                   <div>
-                     <p className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a] mb-1">Documentação Garantida</p>
-                     <p className="text-xs text-slate-500 font-light leading-snug">Imóvel auditado e revisado por nossa equipe jurídica.</p>
-                   </div>
-                 </div>
-                 <div className="flex gap-4">
-                   <Calendar className="w-6 h-6 text-slate-300 flex-shrink-0" />
-                   <div>
-                     <p className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a] mb-1">Visitas Imediatas</p>
-                     <p className="text-xs text-slate-500 font-light leading-snug">Consultores disponíveis 7 dias por semana para acompanhamento.</p>
-                   </div>
-                 </div>
+              {/* Neighborhood Price Context */}
+              <div className="rounded-[40px] overflow-hidden">
+                <NeighborhoodPrice neighborhood={property.neighborhood} />
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
   )
 }
 

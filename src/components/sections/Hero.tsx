@@ -26,7 +26,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-black/20 lg:hidden block" />
       </div>
 
-      <div className="container relative z-20 px-6 mx-auto">
+      <div className="container relative z-20 mx-auto">
         <div className="max-w-3xl">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -48,15 +48,17 @@ export function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-              <Link
-                href="/anunciar"
+              <a
+                href="https://wa.me/5542998332506?text=Olá!%20Quero%20anunciar%20um%20imóvel."
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group relative px-10 py-5 bg-[var(--foreground)] text-[var(--background)] overflow-hidden transition-all duration-500 rounded-none hover:pl-14"
               >
                 <span className="absolute left-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
                   <MoveRight className="w-5 h-5" />
                 </span>
                 <span className="relative z-10 font-bold uppercase tracking-widest text-xs">Anunciar Agora</span>
-              </Link>
+              </a>
 
               <Link
                 href="/imoveis"
@@ -76,7 +78,7 @@ export function Hero() {
           >
             <div>
               <p className="font-serif text-3xl font-light text-[#1a1a1a]">2%</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Fee de Performance</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Taxa de Performance</p>
             </div>
             <div>
               <p className="font-serif text-3xl font-light text-[#1a1a1a]">0%</p>

@@ -44,6 +44,16 @@ html.force-dark {
 }
 
 @layer base {
+  /* Forçando um layout centralizado e estreito (Ultra Slim) */
+  .container {
+    width: 100% !important;
+    max-width: 940px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+  
   body {
     @apply bg-[var(--background)] text-[var(--foreground)] antialiased;
   }

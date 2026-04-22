@@ -1,11 +1,25 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+let _supabase: ReturnType<typeof createClient> | null = null
 
-// Check if keys are present before initializing to avoid runtime errors
-export const isSupabaseConfigured = supabaseUrl && supabaseAnonKey
+export function getSupabase() {
+  if (_supabase) return _supabase
+  
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  
+  if (!url || !key) {
+    console.warn('Supabase not configured - env vars missing')
+    return null as any
+  }
+  
+  _supabase = createClient(url, key)
+  return _supabase
+}
 
-export const supabase = isSupabaseConfigured 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : (null as any) // Type casting to satisfy imports while preventing crash
+export const isSupabaseConfigured = !!(
+  process.env.NEXT_PUBLIC_SUPABASE_URL && 
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+)
+
+export { getSupabase as supabase }

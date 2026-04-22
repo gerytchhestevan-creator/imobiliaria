@@ -9,9 +9,10 @@ import Link from 'next/link'
 
 interface CompareButtonProps {
   property: PropertyData
+  variant?: 'default' | 'icon'
 }
 
-export function CompareButton({ property }: CompareButtonProps) {
+export function CompareButton({ property, variant = 'default' }: CompareButtonProps) {
   const { addToCompare, removeFromCompare, isInCompare, compareList } = useCompare()
   const [loading, setLoading] = useState(false)
 
@@ -28,6 +29,29 @@ export function CompareButton({ property }: CompareButtonProps) {
       addToCompare(property)
       setTimeout(() => setLoading(false), 500)
     }
+  }
+
+  if (variant === 'icon') {
+    return (
+      <button
+        onClick={handleClick}
+        disabled={loading || isFull}
+        className={`w-10 h-10 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg transition-all active:scale-90 ${
+          isAdded 
+            ? 'bg-gray-900 text-white' 
+            : 'bg-white/90 text-[var(--foreground)]/60 hover:bg-white hover:text-[var(--foreground)]'
+        } ${isFull ? 'opacity-50 cursor-not-allowed' : ''}`}
+        title={isAdded ? "Remover da comparação" : "Adicionar à comparação"}
+      >
+        {loading ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : isAdded ? (
+          <Check className="w-4 h-4" />
+        ) : (
+          <ArrowRight className="w-4 h-4" />
+        )}
+      </button>
+    )
   }
 
   return (
