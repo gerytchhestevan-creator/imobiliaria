@@ -55,10 +55,8 @@ export function Navbar() {
           <div className="flex items-center gap-8">
             {[
               { label: 'Comprar', href: '/imoveis' },
-              { label: 'Como Funciona', href: '/#como-funciona' },
               { label: 'Vantagens', href: '/#vantagens' }
-            ].map((item) => (
-              <Link 
+            ].map((item) => (              <Link 
                 key={item.label}
                 href={item.href} 
                 className={cn(
@@ -108,9 +106,7 @@ export function Navbar() {
             className="absolute top-full left-4 right-4 bg-[var(--card)] p-8 shadow-2xl flex flex-col gap-6 md:hidden border border-[var(--border)] rounded-3xl mt-4"
           >
             <Link href="/imoveis" className="text-sm font-black uppercase tracking-widest text-[var(--foreground)]">Catálogo</Link>
-            <Link href="/#como-funciona" className="text-sm font-black uppercase tracking-widest text-[var(--foreground)]">Como Funciona</Link>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-[var(--foreground)]/60">Tema</span>
+            <div className="flex items-center justify-between">              <span className="text-sm text-[var(--foreground)]/60">Tema</span>
               <ThemeToggle />
             </div>
             <a href="https://wa.me/5542998332506?text=Olá!%20Quero%20anunciar%20um%20imóvel." target="_blank" rel="noopener noreferrer" className="w-full py-5 bg-green-600 text-white text-center font-bold uppercase tracking-widest text-xs">

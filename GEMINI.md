@@ -1,7 +1,7 @@
 # GEMINI.md - Imobi2% Project Context
 
 ## Project Overview
-**Imobi2%** is a modern real estate marketplace designed to offer a low-commission (2%) alternative for property sales and rentals. The application provides a seamless experience for buyers to browse listings and for owners to advertise their properties.
+**Imobi2%** is a new concept in real estate, acting as a high-end showcase (vitrine) for property sales rather than a traditional agency. It offers a low-commission (2%) alternative with specialized curation. The application provides a seamless experience for buyers to browse a curated vitrine and for owners to showcase their properties.
 
 ### Main Technologies
 - **Framework:** Next.js 16 (App Router) - *Note: This version contains breaking changes compared to previous versions.*

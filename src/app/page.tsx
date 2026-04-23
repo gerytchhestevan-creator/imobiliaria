@@ -249,65 +249,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* Section: Como Funciona */}
-      <section id="como-funciona" className="py-32 bg-[var(--card)] border-t border-[var(--border)] overflow-hidden">
-        <div className="container mx-auto">
-          <div className="flex flex-col lg:flex-row gap-20 items-start">
-            <motion.div 
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="lg:w-1/3"
-            >
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)] mb-6 block">Fluxo Inteligente</span>
-              <h2 className="text-5xl md:text-6xl font-serif text-[var(--foreground)] leading-[0.9] mb-8">
-                Como <br /><span className="italic text-[var(--accent)]">Funciona.</span>
-              </h2>
-              <p className="text-lg text-[var(--foreground)]/60 font-light leading-relaxed">
-                Nossa metodologia foi desenhada para eliminar atritos, burocracia e custos desnecessários no processo de venda.
-              </p>
-            </motion.div>
-
-            <div className="lg:w-2/3 grid md:grid-cols-3 gap-12 relative">
-              {/* Steps */}
-              {[
-                {
-                  step: '01',
-                  title: 'Análise de Ativo',
-                  desc: 'Fazemos uma curadoria rigorosa e avaliação mercadológica do seu imóvel.'
-                },
-                {
-                  step: '02',
-                  title: 'Estratégia & Branding',
-                  desc: 'Criamos materiais de alto padrão para posicionar seu imóvel no mercado premium.'
-                },
-                {
-                  step: '03',
-                  title: 'Negociação Direta',
-                  desc: 'Acompanhamos todo o fechamento com apenas 2% de taxa de performance.'
-                }
-              ].map((item, i) => (
-                <motion.div 
-                  key={i} 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.2 }}
-                  className="relative group"
-                >
-                  <span className="text-6xl font-serif italic text-[var(--accent)]/20 mb-6 block group-hover:text-[var(--accent)] transition-colors duration-500">
-                    {item.step}
-                  </span>
-                  <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">{item.title}</h3>
-                  <p className="text-sm text-[var(--foreground)]/50 leading-relaxed">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Section: Vantagens */}
       <section id="vantagens" className="py-32 border-t border-[var(--border)] bg-[var(--background)]">
         <div className="container mx-auto">
@@ -317,9 +258,9 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)] mb-6 block">Por que nós?</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)] mb-6 block">Não somos uma imobiliária</span>
             <h2 className="text-5xl md:text-6xl font-serif text-[var(--foreground)] mb-8">
-              Vantagens <span className="italic text-[var(--accent)]">Exclusivas.</span>
+              Um novo conceito de <span className="italic text-[var(--accent)]">Vitrine.</span>
             </h2>
           </motion.div>
 
@@ -379,7 +320,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-5xl md:text-7xl font-serif mb-8 max-w-4xl mx-auto leading-tight">
-              Pronto para vender seu imóvel de forma <span className="italic text-[var(--accent)]">inteligente?</span>
+              Anuncie na vitrine mais <span className="italic text-[var(--accent)]">inteligente</span> do mercado.
             </h2>
             <p className="text-xl mb-12 opacity-60 font-light">Converse com um de nossos especialistas agora mesmo.</p>
             <a 

@@ -24,8 +24,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Imobi2% | Venda seu imóvel pagando apenas 2% de comissão",
-  description: "Marketplace imobiliário focado em economia e agilidade. Venda rápido, sem exclusividade e sem burocracia.",
+  title: "Imobi2% | A Vitrine Inteligente para Venda de Imóveis",
+  description: "Não somos uma imobiliária, somos um novo conceito de venda. Uma vitrine de alto padrão com curadoria especializada e apenas 2% de taxa de performance.",
 };
 
 export default function RootLayout({

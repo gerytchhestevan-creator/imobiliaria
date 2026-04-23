@@ -161,10 +161,10 @@ export default function ListingPage() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-6xl font-serif text-[var(--foreground)] mb-4 tracking-tight">
-              Seu novo <span className="italic text-[var(--accent)]">capítulo</span> começa aqui.
+              Uma vitrine <span className="italic text-[var(--accent)]">curada</span> para você.
             </h1>
             <p className="text-lg text-[var(--foreground)]/60 max-w-2xl font-light">
-              Explore nossa curadoria de imóveis exclusivos, selecionados para quem busca o equilíbrio perfeito entre design, localização e valor justo.
+              Explore nossa vitrine de imóveis exclusivos, selecionados para quem busca o equilíbrio perfeito entre design, localização e o modelo inteligente de venda.
             </p>
           </motion.div>
         </div>
